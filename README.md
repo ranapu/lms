@@ -1,48 +1,213 @@
-# Moodle
+# Inshura LMS Setup and Configuration/Customization Bible
+## _Introduction_
+This document captures all the details about installing moodle and describes about all the configurations/customizations done as part of developing Inshura LMS. This document can be referenced when making any enahancements/changes to the Inshura LMS.
+[![N|Solid](https://www.inshura.com/wp-content/uploads/2022/10/New-Inshura-logo-new.png.webp)](https://inshura.com/)
 
-<p align="center"><a href="https://moodle.org" target="_blank" title="Moodle Website">
-  <img src="https://raw.githubusercontent.com/moodle/moodle/main/.github/moodlelogo.svg" alt="The Moodle Logo">
-</a></p>
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+## Moodle
+This document follows the steps outlined [here](https://docs.moodle.org/404/en/Installing_Moodle) to install the moodle. LMS uses moodle ver 4.3. 
 
-[Moodle][1] is the World's Open Source Learning Platform, widely used around the world by countless universities, schools, companies, and all manner of organisations and individuals.
+Setup 
 
-Moodle is designed to allow educators, administrators and learners to create personalised learning environments with a single robust, secure and integrated system.
+Run the below command to enable php in apache
+```sh
+sudo apt update
+```
+## Enable HTTPS
+Add the following line into ```config.php``` file
+```sh
+$CFG->sslproxy  = true;
+```
 
-## Documentation
+## Customizations
+### SAML Integration
+Install SAML2 Plug in
 
-- Read our [User documentation][3]
-- Discover our [developer documentation][5]
-- Take a look at our [demo site][4]
 
-## Community
 
-[moodle.org][1] is the central hub for the Moodle Community, with spaces for educators, administrators and developers to meet and work together.
 
-You may also be interested in:
+Dillinger is a cloud-enabled, mobile-ready, offline-storage compatible,
+AngularJS-powered HTML5 Markdown editor.
 
-- attending a [Moodle Moot][6]
-- our regular series of [developer meetings][7]
-- the [Moodle User Association][8]
+- Type some Markdown on the left
+- See HTML in the right
+- ✨Magic ✨
 
-## Installation and hosting
+## Features
 
-Moodle is Free, and Open Source software. You can easily [download Moodle][9] and run it on your own web server, however you may prefer to work with one of our experienced [Moodle Partners][10].
+- Import a HTML file and watch it magically convert to Markdown
+- Drag and drop images (requires your Dropbox account be linked)
+- Import and save files from GitHub, Dropbox, Google Drive and One Drive
+- Drag and drop markdown and HTML files into Dillinger
+- Export documents as Markdown, HTML and PDF
 
-Moodle also offers hosting through both [MoodleCloud][11], and our [partner network][10].
+Markdown is a lightweight markup language based on the formatting conventions
+that people naturally use in email.
+As [John Gruber] writes on the [Markdown site][df1]
+
+> The overriding design goal for Markdown's
+> formatting syntax is to make it as readable
+> as possible. The idea is that a
+> Markdown-formatted document should be
+> publishable as-is, as plain text, without
+> looking like it's been marked up with tags
+> or formatting instructions.
+
+This text you see here is *actually- written in Markdown! To get a feel
+for Markdown's syntax, type some text into the left window and
+watch the results in the right.
+
+## Tech
+
+Dillinger uses a number of open source projects to work properly:
+
+- [AngularJS] - HTML enhanced for web apps!
+- [Ace Editor] - awesome web-based text editor
+- [markdown-it] - Markdown parser done right. Fast and easy to extend.
+- [Twitter Bootstrap] - great UI boilerplate for modern web apps
+- [node.js] - evented I/O for the backend
+- [Express] - fast node.js network app framework [@tjholowaychuk]
+- [Gulp] - the streaming build system
+- [Breakdance](https://breakdance.github.io/breakdance/) - HTML
+to Markdown converter
+- [jQuery] - duh
+
+And of course Dillinger itself is open source with a [public repository][dill]
+ on GitHub.
+
+## Installation
+
+Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
+
+Install the dependencies and devDependencies and start the server.
+
+```sh
+cd dillinger
+npm i
+node app
+```
+
+For production environments...
+
+```sh
+npm install --production
+NODE_ENV=production node app
+```
+
+## Plugins
+
+Dillinger is currently extended with the following plugins.
+Instructions on how to use them in your own application are linked below.
+
+| Plugin | README |
+| ------ | ------ |
+| Dropbox | [plugins/dropbox/README.md][PlDb] |
+| GitHub | [plugins/github/README.md][PlGh] |
+| Google Drive | [plugins/googledrive/README.md][PlGd] |
+| OneDrive | [plugins/onedrive/README.md][PlOd] |
+| Medium | [plugins/medium/README.md][PlMe] |
+| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+
+## Development
+
+Want to contribute? Great!
+
+Dillinger uses Gulp + Webpack for fast developing.
+Make a change in your file and instantaneously see your updates!
+
+Open your favorite Terminal and run these commands.
+
+First Tab:
+
+```sh
+node app
+```
+
+Second Tab:
+
+```sh
+gulp watch
+```
+
+(optional) Third:
+
+```sh
+karma test
+```
+
+#### Building for source
+
+For production release:
+
+```sh
+gulp build --prod
+```
+
+Generating pre-built zip archives for distribution:
+
+```sh
+gulp build dist --prod
+```
+
+## Docker
+
+Dillinger is very easy to install and deploy in a Docker container.
+
+By default, the Docker will expose port 8080, so change this within the
+Dockerfile if necessary. When ready, simply use the Dockerfile to
+build the image.
+
+```sh
+cd dillinger
+docker build -t <youruser>/dillinger:${package.json.version} .
+```
+
+This will create the dillinger image and pull in the necessary dependencies.
+Be sure to swap out `${package.json.version}` with the actual
+version of Dillinger.
+
+Once done, run the Docker image and map the port to whatever you wish on
+your host. In this example, we simply map port 8000 of the host to
+port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
+
+```sh
+docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
+```
+
+> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
+
+Verify the deployment by navigating to your server address in
+your preferred browser.
+
+```sh
+127.0.0.1:8000
+```
 
 ## License
 
-Moodle is provided freely as open source software, under version 3 of the GNU General Public License. For more information on our license see
+MIT
 
-[1]: https://moodle.org
-[2]: https://moodle.com
-[3]: https://docs.moodle.org/
-[4]: https://sandbox.moodledemo.net/
-[5]: https://moodledev.io
-[6]: https://moodle.com/events/mootglobal/
-[7]: https://moodledev.io/general/community/meetings
-[8]: https://moodleassociation.org/
-[9]: https://download.moodle.org
-[10]: https://moodle.com/partners
-[11]: https://moodle.com/cloud
-[12]: https://moodledev.io/general/license
+**Free Software, Hell Yeah!**
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+
+   [dill]: <https://github.com/joemccann/dillinger>
+   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
+   [john gruber]: <http://daringfireball.net>
+   [df1]: <http://daringfireball.net/projects/markdown/>
+   [markdown-it]: <https://github.com/markdown-it/markdown-it>
+   [Ace Editor]: <http://ace.ajax.org>
+   [node.js]: <http://nodejs.org>
+   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
+   [jQuery]: <http://jquery.com>
+   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
+   [express]: <http://expressjs.com>
+   [AngularJS]: <http://angularjs.org>
+   [Gulp]: <http://gulpjs.com>
+
+   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
+   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
+   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
+   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
+   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
+   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
